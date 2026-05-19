@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blog Agent Monitor</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <header class="brand">
+          <div class="brand-mark">BA</div>
+          <div>
+            <h1>Blog Agent</h1>
+            <p>Human-in-loop run monitor</p>
+          </div>
+        </header>
+
+        <form id="run-form" class="panel launcher">
+          <label>
+            Topic
+            <textarea id="topic" rows="4" required>Building multi-agent systems with LangGraph</textarea>
+          </label>
+          <label>
+            Audience
+            <input id="audience" value="developers" />
+          </label>
+          <label>
+            Tone
+            <input id="tone" value="technical but approachable" />
+          </label>
+          <div class="split">
+            <label>
+              Research
+              <input id="max-research" type="number" min="1" max="8" value="3" />
+            </label>
+            <label>
+              Revisions
+              <input id="max-revisions" type="number" min="0" max="8" value="2" />
+            </label>
+          </div>
+          <button type="submit" class="primary">Start Run</button>
+        </form>
+
+        <section class="panel control-panel">
+          <div class="section-heading">
+            <h2>Human Gate</h2>
+            <span id="status-pill" class="status idle">Idle</span>
+          </div>
+          <p id="checkpoint-text" class="muted">Start a run to inspect each agent handoff.</p>
+          <textarea id="human-notes" rows="4" placeholder="Optional notes for revision or research direction"></textarea>
+          <div class="button-grid">
+            <button id="continue-btn" disabled>Continue</button>
+            <button id="research-btn" disabled>More Research</button>
+            <button id="revise-btn" disabled>Revise</button>
+            <button id="accept-btn" disabled>Accept Final</button>
+          </div>
+          <button id="stop-btn" class="danger" disabled>Stop Run</button>
+        </section>
+      </aside>
+
+      <section class="workbench">
+        <nav class="topbar">
+          <div>
+            <p class="eyebrow">Current run</p>
+            <h2 id="run-title">No run yet</h2>
+          </div>
+          <div class="metrics">
+            <div><span id="metric-research">0</span><small>research</small></div>
+            <div><span id="metric-versions">0</span><small>versions</small></div>
+            <div><span id="metric-feedback">0</span><small>reviews</small></div>
+          </div>
+        </nav>
+
+        <section class="agent-strip" id="agent-strip">
+          <div data-agent="researcher">Researcher</div>
+          <div data-agent="planner">Planner</div>
+          <div data-agent="writer">Writer</div>
+          <div data-agent="editor">Editor</div>
+        </section>
+
+        <section class="main-grid">
+          <section class="panel timeline-panel">
+            <div class="section-heading">
+              <h2>Live Timeline</h2>
+              <button id="clear-log" class="ghost">Clear</button>
+            </div>
+            <div id="timeline" class="timeline"></div>
+          </section>
+
+          <section class="panel inspector">
+            <div class="tabs">
+              <button class="tab active" data-tab="overview">Overview</button>
+              <button class="tab" data-tab="research">Research</button>
+              <button class="tab" data-tab="outline">Outline</button>
+              <button class="tab" data-tab="draft">Draft</button>
+              <button class="tab" data-tab="state">State</button>
+            </div>
+
+            <div id="overview" class="tab-view active">
+              <div id="overview-grid" class="overview-grid"></div>
+            </div>
+
+            <div id="research" class="tab-view">
+              <div id="research-list" class="stack"></div>
+            </div>
+
+            <div id="outline" class="tab-view">
+              <textarea id="outline-editor" class="code-editor" spellcheck="false"></textarea>
+            </div>
+
+            <div id="draft" class="tab-view">
+              <div class="draft-toolbar">
+                <span id="draft-meta" class="muted">No draft yet</span>
+              </div>
+              <article id="draft-preview" class="draft-preview"></article>
+            </div>
+
+            <div id="state" class="tab-view">
+              <pre id="raw-state" class="raw-state">{}</pre>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
