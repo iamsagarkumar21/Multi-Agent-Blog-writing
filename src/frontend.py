@@ -207,6 +207,12 @@ def _run_worker(session: RunSession) -> None:
         session.error = str(exc)
         session.status = "failed"
         session.emit("error", f"Run failed: {exc}")
+    finally:
+        try:
+            from src.llm import flush_langfuse
+            flush_langfuse()
+        except Exception:
+            pass
 
 
 def _session_summary(session: RunSession) -> dict[str, Any]:
@@ -234,12 +240,14 @@ def _create_run(payload: dict[str, Any]) -> RunSession:
         tone=payload.get("tone", "technical but approachable").strip() or "technical but approachable",
         max_research_iterations=int(payload.get("max_research_iterations") or 3),
         max_revision_cycles=int(payload.get("max_revision_cycles") or 2),
+        session_id=run_id,
     )
     session = RunSession(id=run_id, state=state)
     with RUNS_LOCK:
         RUNS[run_id] = session
     threading.Thread(target=_run_worker, args=(session,), daemon=True).start()
     return session
+
 
 
 def _continue_run(session: RunSession, payload: dict[str, Any]) -> None:

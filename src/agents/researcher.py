@@ -40,7 +40,7 @@ Return ONLY valid JSON — no explanation, no markdown:
 {{"sufficient": true}} or {{"sufficient": false}}"""
 
 
-def _is_sufficient(findings: list[str], topic: str, current_iter: int) -> bool:
+def _is_sufficient(findings: list[str], topic: str, current_iter: int, session_id: str | None = None) -> bool:
     """
     Ask a fast LLM to judge if findings are good enough.
     Falls back to heuristic if LLM output can't be parsed.
@@ -53,7 +53,13 @@ def _is_sufficient(findings: list[str], topic: str, current_iter: int) -> bool:
     )
 
     try:
-        raw = llm_fast.invoke(prompt).content.strip()
+        config = {}
+        if session_id:
+            config["metadata"] = {
+                "langfuse_session_id": session_id,
+                "langfuse_tags": ["researcher", f"iteration-{current_iter}"]
+            }
+        raw = llm_fast.invoke(prompt, config=config).content.strip()
         print(f"   🔬 RAW EVAL: {repr(raw)}")
 
         # Strip markdown fences if present
@@ -83,7 +89,8 @@ def researcher_node(state: BlogState) -> dict:
         return {"error": f"Search failed: {e}"}
 
     # Step 2: Evaluate sufficiency
-    sufficient = _is_sufficient(findings, state.topic, current_iter)
+    sufficient = _is_sufficient(findings, state.topic, current_iter, state.session_id)
+
 
     # Step 3: Heuristic override — don't loop forever on good data
     # [Production: LLM judgment is probabilistic — always pair with deterministic guardrails]

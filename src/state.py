@@ -47,6 +47,8 @@ class BlogState(BaseModel):
     topic: str
     audience: str = "general"
     tone: str = "professional"
+    session_id: Optional[str] = None
+
 
     # ── Research phase ─────────────────────
     research_results: list[ResearchResult] = Field(default_factory=list)

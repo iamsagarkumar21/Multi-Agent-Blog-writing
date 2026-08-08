@@ -5,3 +5,4 @@ langgraph==1.1.10
 pydantic==2.13.4
 python-dotenv==1.2.2
 tavily-python==0.7.24
+langfuse>=2.0.0

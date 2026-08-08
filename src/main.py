@@ -20,15 +20,35 @@ def run(
     tone: str = "technical but approachable",
     output_path: str = "output_draft.md",
 ) -> None:
+    import uuid
+    session_id = f"cli-{uuid.uuid4().hex[:10]}"
+
     initial_state = BlogState(
         topic=topic,
         audience=audience,
         tone=tone,
+        session_id=session_id,
     )
+
+
+    from src.llm import langfuse_handler
 
     print(f"\n🚀 Starting blog agent: {topic}\n{'─'*50}")
 
-    for step in blog_graph.stream(initial_state.model_dump()):
+
+    config = {}
+    if langfuse_handler:
+        # Dynamic naming following best practices
+        langfuse_handler.trace_name = f"blog-agent-cli-{topic.lower().replace(' ', '-')[:30]}"
+        config["callbacks"] = [langfuse_handler]
+        config["metadata"] = {
+            "langfuse_session_id": session_id,
+            "langfuse_tags": ["cli", f"topic-{topic.lower().replace(' ', '-')[:20]}"]
+        }
+
+    for step in blog_graph.stream(initial_state.model_dump(), config=config):
+
+
         node_name   = list(step.keys())[0]
         node_output = step[node_name]
 
@@ -66,6 +86,13 @@ def run(
             print(f"   ❌ {node_output['error']}")
 
     print(f"\n{'─'*50}\n✅ Done. Open {output_path}")
+
+    try:
+        from src.llm import flush_langfuse
+        flush_langfuse()
+    except Exception:
+        pass
+
 
 
 if __name__ == "__main__":

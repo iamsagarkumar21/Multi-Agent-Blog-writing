@@ -72,6 +72,12 @@ def editor_node(state: BlogState) -> dict:
     chain    = EDITOR_PROMPT | llm | JsonOutputParser()
 
     try:
+        config = {}
+        if state.session_id:
+            config["metadata"] = {
+                "langfuse_session_id": state.session_id,
+                "langfuse_tags": ["editor", f"revision-{state.revision_count + 1}"]
+            }
         data = chain.invoke({
             "topic":             state.topic,
             "audience":          state.audience,
@@ -83,7 +89,8 @@ def editor_node(state: BlogState) -> dict:
             # [Production: cap draft passed to editor at 3000 chars —
             # editor needs to judge quality, not re-read every word]
             "previous_feedback": _format_previous_feedback(state.edit_feedback),
-        })
+        }, config=config)
+
 
         feedback = EditFeedback(
             approved=data["approved"],

@@ -115,6 +115,12 @@ def writer_node(state: BlogState) -> dict:
         print(f"   📝 [{i+1}/{section_count}] {section_title}")
 
         try:
+            config = {}
+            if state.session_id:
+                config["metadata"] = {
+                    "langfuse_session_id": state.session_id,
+                    "langfuse_tags": ["writer", f"section-{i+1}"]
+                }
             content = chain.invoke({
                 "tone":             state.tone,
                 "audience":         state.audience,
@@ -130,7 +136,8 @@ def writer_node(state: BlogState) -> dict:
                 # [Production: writer needs full context of what was wrong
                 # to avoid fixing one thing and breaking another]
                 "editor_feedback":  feedback if is_revision else "First draft.",
-            })
+            }, config=config)
+
 
             sections_content[section_title] = content
             previous_content += f"\n\n## {section_title}\n{content}"

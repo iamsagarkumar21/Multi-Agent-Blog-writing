@@ -63,12 +63,19 @@ def planner_node(state: BlogState) -> dict:
     chain = PLANNER_PROMPT | llm | JsonOutputParser()
 
     try:
+        config = {}
+        if state.session_id:
+            config["metadata"] = {
+                "langfuse_session_id": state.session_id,
+                "langfuse_tags": ["planner"]
+            }
         data = chain.invoke({
             "topic":    state.topic,
             "audience": state.audience,
             "tone":     state.tone,
             "findings": findings_summary,
-        })
+        }, config=config)
+
 
         outline = BlogOutline(
             title=data["title"],

@@ -8,6 +8,7 @@
   </head>
   <body>
     <main class="app-shell">
+      <!-- ── Sidebar: launch form + human gate ──────────────────── -->
       <aside class="sidebar">
         <header class="brand">
           <div class="brand-mark">BA</div>
@@ -17,6 +18,7 @@
           </div>
         </header>
 
+        <!-- Launch form -->
         <form id="run-form" class="panel launcher">
           <label>
             Topic
@@ -32,40 +34,40 @@
           </label>
           <div class="split">
             <label>
-              Research
+              Max Research Passes
               <input id="max-research" type="number" min="1" max="8" value="3" />
             </label>
             <label>
-              Revisions
+              Max Revisions
               <input id="max-revisions" type="number" min="0" max="8" value="2" />
             </label>
           </div>
           <button type="submit" class="primary">Start Run</button>
         </form>
 
+        <!-- Human gate / checkpoint panel -->
         <section class="panel control-panel">
           <div class="section-heading">
             <h2>Human Gate</h2>
             <span id="status-pill" class="status idle">Idle</span>
           </div>
           <p id="checkpoint-text" class="muted">Start a run to inspect each agent handoff.</p>
-          <textarea id="human-notes" rows="4" placeholder="Optional notes for revision or research direction"></textarea>
+          <textarea id="human-notes" rows="3" placeholder="Optional notes for the writer or researcher"></textarea>
           <div class="button-grid">
             <button id="continue-btn" disabled>Continue</button>
             <button id="research-btn" disabled>More Research</button>
-            <button id="revise-btn" disabled>Revise</button>
-            <button id="accept-btn" disabled>Accept Final</button>
+            <button id="revise-btn"   disabled>Revise</button>
+            <button id="accept-btn"   disabled>Accept Final</button>
           </div>
           <button id="stop-btn" class="danger" disabled>Stop Run</button>
         </section>
       </aside>
 
+      <!-- ── Main workbench ──────────────────────────────────────── -->
       <section class="workbench">
+        <!-- Top bar: topic title + live metrics -->
         <nav class="topbar">
-          <div>
-            <p class="eyebrow">Current run</p>
-            <h2 id="run-title">No run yet</h2>
-          </div>
+          <h2 id="run-title">No run yet</h2>
           <div class="metrics">
             <div><span id="metric-research">0</span><small>research</small></div>
             <div><span id="metric-versions">0</span><small>versions</small></div>
@@ -73,14 +75,18 @@
           </div>
         </nav>
 
-        <section class="agent-strip" id="agent-strip">
+        <!-- Agent pipeline progress strip -->
+        <section class="agent-strip" id="agent-strip" aria-label="Agent pipeline">
           <div data-agent="researcher">Researcher</div>
           <div data-agent="planner">Planner</div>
           <div data-agent="writer">Writer</div>
           <div data-agent="editor">Editor</div>
         </section>
 
+        <!-- Inspector + timeline grid -->
         <section class="main-grid">
+
+          <!-- Live event timeline -->
           <section class="panel timeline-panel">
             <div class="section-heading">
               <h2>Live Timeline</h2>
@@ -89,40 +95,38 @@
             <div id="timeline" class="timeline"></div>
           </section>
 
+          <!-- Inspector tabs -->
           <section class="panel inspector">
-            <div class="tabs">
-              <button class="tab active" data-tab="overview">Overview</button>
-              <button class="tab" data-tab="research">Research</button>
-              <button class="tab" data-tab="outline">Outline</button>
-              <button class="tab" data-tab="draft">Draft</button>
-              <button class="tab" data-tab="state">State</button>
+            <div class="tabs" role="tablist">
+              <button class="tab active" data-tab="overview"  role="tab">Overview</button>
+              <button class="tab"        data-tab="research"  role="tab">Research</button>
+              <button class="tab"        data-tab="outline"   role="tab">Outline</button>
+              <button class="tab"        data-tab="draft"     role="tab">Draft</button>
             </div>
 
-            <div id="overview" class="tab-view active">
+            <div id="overview" class="tab-view active" role="tabpanel">
               <div id="overview-grid" class="overview-grid"></div>
             </div>
 
-            <div id="research" class="tab-view">
+            <div id="research" class="tab-view" role="tabpanel">
               <div id="research-list" class="stack"></div>
             </div>
 
-            <div id="outline" class="tab-view">
+            <div id="outline" class="tab-view" role="tabpanel">
+              <p class="hint">Edit the JSON below before clicking <strong>Continue</strong> to inject a custom outline into the run.</p>
               <textarea id="outline-editor" class="code-editor" spellcheck="false"></textarea>
             </div>
 
-            <div id="draft" class="tab-view">
+            <div id="draft" class="tab-view" role="tabpanel">
               <div class="draft-toolbar">
                 <span id="draft-meta" class="muted">No draft yet</span>
               </div>
               <article id="draft-preview" class="draft-preview"></article>
             </div>
-
-            <div id="state" class="tab-view">
-              <pre id="raw-state" class="raw-state">{}</pre>
-            </div>
           </section>
-        </section>
-      </section>
+
+        </section><!-- /.main-grid -->
+      </section><!-- /.workbench -->
     </main>
 
     <script src="/static/app.js"></script>

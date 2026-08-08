@@ -431,10 +431,9 @@ textarea:focus {
   margin-bottom: 7px;
 }
 
-.code-editor,
-.raw-state {
+.code-editor {
   width: 100%;
-  min-height: 100%;
+  min-height: calc(100vh - 310px);
   margin: 0;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -443,16 +442,23 @@ textarea:focus {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 13px;
   line-height: 1.5;
-}
-
-.code-editor {
   resize: none;
+  padding: 14px;
 }
 
-.raw-state {
-  overflow: auto;
-  padding: 14px;
-  white-space: pre-wrap;
+.hint {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.draft-preview code {
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.88em;
 }
 
 .draft-toolbar {

@@ -39,6 +39,7 @@ The shared `BlogState` object carries the topic, research results, outline, draf
 ```text
 .
 ├── architecture.md          # Detailed execution trace and architecture notes
+├── INTERVIEW_PREP.md        # Comprehensive interview Q&A and technical deep-dive guide
 ├── requirements.txt         # Python dependencies
 ├── src/
 │   ├── main.py              # Terminal runner
