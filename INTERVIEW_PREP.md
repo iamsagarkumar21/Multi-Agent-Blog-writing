@@ -51,6 +51,14 @@ Agents **never call each other directly**. Communication happens purely through 
 - LangGraph merges updates into `BlogState`.
 - Pure-Python **routing functions** evaluate `BlogState` to select the next node.
 
+### State Management: How `BlogState` Works
+The project uses a single canonical `BlogState` object to carry all run data through the graph.
+- `BlogState` is defined as a Pydantic model with typed fields for `topic`, `research_findings`, `outline`, `draft`, `editor_feedback`, `status`, `error`, and counters like `research_iteration` and `revision_cycle`.
+- Each node receives the current state snapshot and returns only the fields it changes.
+- LangGraph takes those partial updates and merges them into the existing `BlogState`, producing a new immutable state for the next step.
+- This means the graph is effectively a state machine: agents transform state, routing functions inspect the updated state, and the next node is chosen deterministically.
+- Because updates are partial and validated, the system avoids cross-agent side effects and makes it easy to debug or replay runs.
+
 ---
 
 ## 3. Technology Stack & Trade-Off Analysis
